@@ -39,12 +39,32 @@
 </head>
 <body>
     <h1>欢迎来到 Mr. Yang 的个人网站</h1>
+    <style>
+        <nav>{
+            padding-left: 20px; /* 核心：首页前的空格（20px是示例，可改） */
+        }
+        nav a {
+            text-decoration: none;
+        color: #1677ff;
+        }
+        nav .separator {
+            color: #999;
+            margin: 0 8px; /* |前后的空格，可调整 */
+        }
+        nav a:hover {
+            color: #0d66e6;
+        }
+    </style>
     <nav>
-        <a href="index.html"> 首页</a> | 
-        <a href="about.html"> 关于我</a> | 
-        <a href="contact.html"> 联系方式</a> | <!-- 修复：| 前加空格，视觉更美观 -->
+        <a href="index.html">首页</a>
+        <span class="separator">|</span>
+        <a href="about.html">关于我</a>|
+        <span class="separator">|</span>
+        <a href="contact.html">联系方式</a>| <!-- 修复：| 前加空格，视觉更美观 -->
+        <span class="separator">|</span>
         <!-- 优化：外部链接加 target="_blank"（新标签页打开）+ 安全属性 -->
-        <a href="https://www.baidu.com" target="_blank" rel="noopener noreferrer"> 百度</a> |
+        <a href="https://www.baidu.com" target="_blank" rel="noopener noreferrer">百度</a>
+        <span class="separator">|</span>
     </nav>
     <p>这是我的第一个HTML+CSS+JS网站～</p>
     <!-- 备注：需确保仓库images文件夹中有avatar.webp，否则图片会显示破碎 -->
@@ -67,5 +87,6 @@
     </script>
 </body>
 </html>
+
 
 
