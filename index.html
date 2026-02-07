@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>我的个人网站 - 首页</title>
+    <!-- 内嵌CSS样式：美化页面 -->
+    <style>
+        body {
+            font-family: "微软雅黑", sans-serif;
+            max-width: 800px;
+            margin: 0 auto; /* 页面居中 */
+            padding: 20px;
+        }
+        nav a {
+            text-decoration: none; /* 去掉链接下划线 */
+            color: #1677ff;
+            margin-right: 15px;
+        }
+        nav a:hover {
+            color: #0d66e6; /* 鼠标悬浮变颜色 */
+        }
+        button {
+            margin-top: 20px;
+            padding: 8px 16px;
+            background: #1677ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>欢迎来到我的个人网站</h1>
+    <nav>
+        <a href="index.html">首页</a> | 
+        <a href="about.html">关于我</a> | 
+        <a href="contact.html">联系方式</a>
+    </nav>
+    <p>这是我的第一个HTML+CSS+JS网站～</p>
+    <img src="C:/Users/Administrator/Desktop/peerless_project/images/123.jpg" alt="我的头像" width="200">
+    <!-- 加JS交互按钮 -->
+    <button type="button" onclick="changeBg()">点击换背景</button>
+
+    <!-- 内嵌JavaScript：实现交互 -->
+    <script>
+        // 点击按钮切换页面背景色
+        function changeBg() {
+            document.body.style.background = "#f5f7fa";
+            alert("背景色切换成功啦！");
+        }
+    </script>
+</body>
+</html>
