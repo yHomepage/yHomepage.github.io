@@ -1,10 +1,58 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"> <!-- 强制UTF-8编码，解决乱码核心 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第一章 - 初入江湖</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- 若style.css不存在，先注释这行，避免404报错 -->
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <!-- 内置基础样式，保证页面美观且适配手机 -->
+    <style>
+        /* 全局样式重置 */
+        body {
+            font-family: "微软雅黑", "宋体", sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.8; /* 行间距，阅读更舒适 */
+            background-color: #f9f9f9;
+        }
+        /* 章节标题样式 */
+        .chapter-title {
+            color: #333;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        /* 正文样式 */
+        .content {
+            color: #444;
+            font-size: 16px;
+        }
+        /* 章节导航样式 */
+        .nav {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between; /* 左右分布 */
+            align-items: center;
+        }
+        /* 禁用的上一章样式（置灰） */
+        .disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+        /* 下一章链接样式 */
+        .nav a {
+            color: #0066cc;
+            text-decoration: none;
+            padding: 5px 10px;
+        }
+        .nav a:hover {
+            color: #004999;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1 class="chapter-title">第一章 初入江湖</h1>
