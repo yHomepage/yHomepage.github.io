@@ -3,56 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>导航栏示例</title>
+    <title>小说排行榜 - 天玄小说</title>
+    <!-- 引入通用样式（可选，和导航栏用同一套样式更统一） -->
     <style>
-        /* 导航栏整体样式 */
-        .nav-container {
-            background-color: #f8f9fa; /* 浅灰背景，区分页面内容 */
-            padding: 15px 20px; /* 上下左右内边距，避免内容挤边 */
-            border-radius: 8px; /* 圆角，更美观 */
-            margin: 20px 0; /* 上下外边距，和其他内容分开 */
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        /* 导航链接容器（消除默认间距） */
-        .nav-container nav {
-            display: flex; /* 横向排列链接 */
-            align-items: center; /* 垂直居中 */
-            gap: 12px; /* 链接和分隔符之间的间距，替代手动加空格 */
+        body {
+            background-color: #f5f5f5;
+            font-family: "微软雅黑", Arial, sans-serif;
             font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        /* 导航链接样式 */
-        .nav-container a {
-            color: #0066cc; /* 蓝色链接色，符合阅读习惯 */
-            text-decoration: none; /* 去掉默认下划线 */
-            padding: 5px 8px; /* 点击区域更大，更友好 */
+        /* 页面标题 */
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin: 30px 0;
+            color: #222;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
         }
-        /* 鼠标悬浮链接效果 */
-        .nav-container a:hover {
-            color: #004999; /* 深色hover效果 */
-            text-decoration: underline; /* 悬浮加下划线 */
+        /* 排行榜列表容器 */
+        .ranking-list {
+            list-style: none; /* 去掉默认列表圆点 */
+            gap: 20px;
+            display: flex;
+            flex-direction: column; /* 纵向排列每个小说条目 */
         }
-        /* 分隔符样式 */
-        .separator {
-            color: #999; /* 浅灰色分隔符，不抢视线 */
-            font-size: 14px;
+        /* 单个小说条目样式 */
+        .novel-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 轻微阴影，更立体 */
+            transition: transform 0.2s; /* 悬浮轻微上浮效果 */
+        }
+        .novel-item:hover {
+            transform: translateY(-5px); /* 鼠标悬浮上浮5px */
+        }
+        /* 小说排名序号 */
+        .rank-num {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            background-color: #0066cc;
+            color: #fff;
+            border-radius: 50%; /* 圆形序号 */
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        /* 小说标题 */
+        .novel-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        /* 小说标题链接 */
+        .novel-title a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .novel-title a:hover {
+            text-decoration: underline;
+        }
+        /* 小说简介/作者信息 */
+        .novel-info {
+            color: #666;
+            margin-left: 45px; /* 和序号对齐 */
+            line-height: 1.6;
+        }
+        .novel-info span {
+            display: inline-block;
+            margin-right: 20px;
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏外层容器（方便控制整体样式） -->
-    <div class="nav-container">
-        <nav>
-            <a href="index.html">首页</a>
-            <span class="separator">|</span>
-            <a href="about.html">关于我</a>
-            <span class="separator">|</span>
-            <a href="contact.html">联系方式</a>
-            <span class="separator">|</span>
-            <!-- 外部链接：新标签页打开 + 安全属性 -->
-            <a href="https://www.baidu.com" target="_blank" rel="noopener noreferrer">百度</a>
-            <span class="separator">|</span>
-            <!-- 修正路径：小说排行榜指向对应的文件（示例名） -->
-            <a href="./天玄小说/ranking.html">小说排行榜</a>
-        </nav>
-    </div>
+    <!-- 页面标题 -->
+    <h1 class="page-title">天玄小说排行榜</h1>
+
+    <!-- 小说排行榜列表 -->
+    <ul class="ranking-list">
+        <!-- 第一名小说 -->
+        <li class="novel-item">
+            <span class="rank-num">1</span>
+            <div class="novel-title">
+                <!-- 链接指向《剑来》的第一章（注意路径！） -->
+                <a href="./剑来/chapter1.html">剑来</a>
+            </div>
+            <div class="novel-info">
+                <span>作者：烽火戏诸侯</span>
+                <span>状态：完本</span>
+                <p>简介：大千世界，无奇不有。我陈平安，唯有一剑，可搬山，可倒海，可降妖，可镇魔，可开天，可辟地...</p>
+            </div>
+        </li>
+
+        <!-- 第二名小说 -->
+        <li class="novel-item">
+            <span class="rank-num">2</span>
+            <div class="novel-title">
+                <!-- 链接指向《雪中悍刀行》的第一章 -->
+                <a href="./雪中悍刀行/chapter1.html">雪中悍刀行</a>
+            </div>
+            <div class="novel-info">
+                <span>作者：烽火戏诸侯</span>
+                <span>状态：完本</span>
+                <p>简介：北凉王世子徐凤年，以纨绔形象著称于世，实则胸藏沟壑，腹有良谋。千里历练，三进三出，终成北凉王...</p>
+            </div>
+        </li>
+
+        <!-- 可继续添加更多小说条目 -->
+        <li class="novel-item">
+            <span class="rank-num">3</span>
+            <div class="novel-title">
+                <a href="./你的小说名/chapter1.html">你的小说名称</a>
+            </div>
+            <div class="novel-info">
+                <span>作者：你的名字</span>
+                <span>状态：连载中</span>
+                <p>简介：你的小说简介内容...</p>
+            </div>
+        </li>
+    </ul>
 </body>
 </html>
