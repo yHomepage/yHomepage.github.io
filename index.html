@@ -1,61 +1,89 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的个人网站 - 首页</title>
     <style>
-        /* 全局样式 */
+        /* 1. 基础重置（来自水波粒子代码，保证样式统一） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* 保留原个人网站的字体，同时兼容多系统 */
+            font-family: "微软雅黑", 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        /* 2. 水波粒子Canvas样式（核心：作为背景不遮挡内容） */
+        #particle-canvas {
+            position: fixed;    /* 固定定位，覆盖整个页面 */
+            top: 0;
+            left: 0;
+            width: 100vw;       /* 视口宽度 */
+            height: 100vh;      /* 视口高度 */
+            z-index: -1;        /* 置于所有内容下方 */
+            pointer-events: none; /* 不阻挡鼠标点击 */
+            background: #0a0a0f; /* 粒子背景底色 */
+        }
+
+        /* 3. 个人网站全局样式（保留+适配） */
         body {
-            font-family: "微软雅黑", sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background: white;
+            background: transparent; /* 改为透明，显示粒子背景 */
             transition: background 0.3s ease;
+            position: relative; /* 确保内容层级高于Canvas */
+            z-index: 1; /* 内容在粒子背景上方 */
+            color: white; /* 文字改为白色，适配深色粒子背景 */
         }
 
-        /* 导航栏整体样式（关键修改：宽度适配内容） */
+        /* 修改h1标题为淡蓝色 */
+        h1 {
+            /*color: #87CEFA;  淡蓝色，可替换成#ADD8E6/#b3d9ff等 */
+            /*想要渐变淡蓝就打开下面注释：*/
+            background: linear-gradient(90deg, #87CEFA, #b3d9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            
+        }
+
+        /* 4. 导航栏样式（保留原样式，优化适配深色背景） */
         .nav-container {
-            background-color: #f8f9fa; /* 浅灰背景 */
-            padding: 15px 20px; /* 内边距 */
-            border-radius: 8px; /* 圆角 */
-            margin: 20px 0; /* 上下外边距 */
-            /* 核心修改：让容器宽度只包裹内容，而不是撑满 */
-            display: inline-block; /* 宽度适配内容 */
-            /* 可选：如果需要左对齐，加这行；不加则居中 */
-            /* text-align: left; */
+            background-color: rgba(248, 249, 250, 0.8); /* 半透浅灰，适配深色背景 */
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: inline-block;
+            backdrop-filter: blur(5px); /* 毛玻璃效果，更美观 */
         }
 
-        /* 导航链接容器样式 */
         .nav-container nav {
-            display: flex; /* 横向排列链接 */
-            align-items: center; /* 垂直居中 */
-            gap: 12px; /* 链接和分隔符之间的间距 */
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-size: 16px;
         }
 
-        /* 导航链接样式 */
         .nav-container a {
-            color: #0066cc; /* 蓝色链接色 */
-            text-decoration: none; /* 去掉默认下划线 */
-            padding: 5px 8px; /* 点击区域更大 */
+            color: #0066cc;
+            text-decoration: none;
+            padding: 5px 8px;
         }
 
-        /* 鼠标悬浮链接效果 */
         .nav-container a:hover {
-            color: #004999; /* 深色hover效果 */
-            text-decoration: underline; /* 悬浮加下划线 */
+            color: #004999;
+            text-decoration: underline;
         }
 
-        /* 分隔符样式 */
         .nav-container .separator {
-            color: #999; /* 浅灰色分隔符 */
+            color: #999;
             font-size: 14px;
-            margin: 0 !important; /* 覆盖原有margin */
+            margin: 0 !important;
         }
 
-        /* 按钮样式 */
+        /* 5. 按钮样式（保留+适配深色背景） */
         button {
             margin-top: 20px;
             padding: 8px 16px;
@@ -70,12 +98,21 @@
         button:hover {
             background: #0d66e6;
         }
+
+        /* 6. 图片样式（加轻微阴影，适配深色背景） */
+        img {
+            border-radius: 8px; /* 圆角更美观 */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); /* 阴影突出图片 */
+        }
     </style>
 </head>
 <body>
+    <!-- 1. 水波粒子Canvas容器（必须放在最前面） -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- 2. 个人网站原有内容（全部保留） -->
     <h1>欢迎来到 Mr. Yang 的个人网站</h1>
     
-    <!-- 导航容器 -->
     <div class="nav-container">
         <nav>
             <a href="index.html">首页</a>
@@ -94,18 +131,187 @@
     <img src="./images/avatar.webp" alt="我的头像" width="200">
     <button type="button" onclick="changeBg()">点击换背景</button>
 
+    <!-- 3. 水波粒子动画JS代码（完整保留） -->
+    <script>
+        /**
+         * Top-Down Water Ripple Particle Animation
+         * Creates a 3D grid of particles that ripple like water from the mouse position
+         */
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        let mouse = { x: 0, y: 0, active: false };
+        let rippleCenter = { x: 0, y: 0, vx: 0, vy: 0 };
+        let time = 0;
+
+        const config = {
+            particleSpacing: 25,
+            rows: 0,
+            cols: 0,
+            waveSpeed: 0.025,
+            waveAmplitude: 35,
+            waveFrequency: 0.02,
+            focalLength: 300,
+            viewAngle: 0.8,
+            baseY: 100,
+            colors: ['#4facfe', '#00f2fe', '#00d4ff'],
+            springStrength: 0.005,
+            friction: 0.90
+        };
+
+        class Particle {
+            constructor(x, z) {
+                this.x = x;
+                this.y = 0;
+                this.z = z;
+
+                this.ox = x;
+                this.oz = z;
+
+                this.size = 1.2;
+                this.color = config.colors[Math.floor(Math.random() * config.colors.length)];
+            }
+
+            update() {
+                const dx = this.ox - rippleCenter.x;
+                const dz = this.oz - rippleCenter.y;
+                const distance = Math.sqrt(dx * dx + dz * dz);
+
+                this.y = Math.sin(distance * config.waveFrequency - time * 2) * config.waveAmplitude;
+            }
+
+            draw() {
+                const cos = Math.cos(config.viewAngle);
+                const sin = Math.sin(config.viewAngle);
+
+                const rx = this.x;
+                const ry = this.y * cos - this.z * sin;
+                const rz = this.y * sin + this.z * cos;
+
+                const depth = config.focalLength + rz + 600;
+                const scale = config.focalLength / depth;
+
+                if (scale > 0) {
+                    const screenX = rx * scale + width / 2;
+                    const screenY = (ry + config.baseY) * scale + height / 2;
+                    const size = this.size * scale * 2;
+
+                    ctx.beginPath();
+                    ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+
+                    let alpha = (1 - (rz + 500) / 2000);
+                    alpha = Math.max(0, Math.min(1, alpha));
+
+                    ctx.globalAlpha = alpha;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
+        }
+
+        function init() {
+            resize();
+            createParticles();
+            animate();
+        }
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+
+            config.cols = Math.ceil(width / config.particleSpacing) + 30;
+            config.rows = Math.ceil(height / config.particleSpacing) + 30;
+        }
+
+        function createParticles() {
+            particles = [];
+
+            const startX = -(config.cols * config.particleSpacing) / 2;
+            const startZ = -(config.rows * config.particleSpacing) / 2;
+
+            for (let i = 0; i < config.cols; i++) {
+                for (let j = 0; j < config.rows; j++) {
+                    const x = startX + i * config.particleSpacing;
+                    const z = startZ + j * config.particleSpacing;
+                    particles.push(new Particle(x, z));
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            time += config.waveSpeed;
+
+            let targetX = mouse.active ? mouse.x : Math.sin(time * 0.5) * 200;
+            let targetY = mouse.active ? mouse.y : Math.cos(time * 0.5) * 200;
+
+            const fx = (targetX - rippleCenter.x) * config.springStrength;
+            const fy = (targetY - rippleCenter.y) * config.springStrength;
+
+            rippleCenter.vx += fx;
+            rippleCenter.vy += fy;
+
+            rippleCenter.vx *= config.friction;
+            rippleCenter.vy *= config.friction;
+
+            rippleCenter.x += rippleCenter.vx;
+            rippleCenter.y += rippleCenter.vy;
+
+            const sin = Math.sin(config.viewAngle);
+            const cos = Math.cos(config.viewAngle);
+
+            particles.sort((a, b) => {
+                const az = a.y * sin + a.z * cos;
+                const bz = b.y * sin + b.z * cos;
+                return bz - az;
+            });
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resize();
+            createParticles();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.active = true;
+            mouse.x = (e.clientX - width / 2) * 2;
+            mouse.y = (e.clientY - height / 2) * 2;
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.active = false;
+        });
+
+        init();
+    </script>
+
+    <!-- 4. 个人网站原有JS代码（保留） -->
     <script>
         let isBgChanged = false;
         function changeBg() {
             if (!isBgChanged) {
-                document.body.style.background = "#e6f7ff";
+                // 改为半透浅蓝色，不遮挡粒子背景
+                document.body.style.background = "rgba(230, 247, 255, 0.8)";
                 alert("背景色已切换为浅蓝色！");
             } else {
-                document.body.style.background = "white";
-                alert("背景色已恢复为默认白色！");
+                // 恢复透明，显示粒子背景
+                document.body.style.background = "transparent";
+                alert("背景色已恢复为粒子背景！");
             }
             isBgChanged = !isBgChanged;
         }
     </script>
 </body>
 </html>
+
