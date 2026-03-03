@@ -2,74 +2,89 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 关键优化：viewport参数补充，禁止移动端缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>我的个人网站 - 首页</title>
     <style>
-        /* 1. 基础重置（来自水波粒子代码，保证样式统一） */
+        /* 1. 基础重置（新增：禁止文字自动缩放） */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            /* 保留原个人网站的字体，同时兼容多系统 */
             font-family: "微软雅黑", 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            /* 核心：禁止文字自动缩放，确保16px在所有设备上大小一致 */
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%; /* 禁止iOS自动调整文字大小 */
+            text-size-adjust: 100%; /* 标准写法，禁止文字缩放 */
         }
 
-        /* 2. 水波粒子Canvas样式（核心：作为背景不遮挡内容） */
+        /* 2. 水波粒子Canvas样式 */
         #particle-canvas {
-            position: fixed;    /* 固定定位，覆盖整个页面 */
+            position: fixed;    
             top: 0;
             left: 0;
-            width: 100vw;       /* 视口宽度 */
-            height: 100vh;      /* 视口高度 */
-            z-index: -1;        /* 置于所有内容下方 */
-            pointer-events: none; /* 不阻挡鼠标点击 */
-            background: #0a0a0f; /* 粒子背景底色 */
+            width: 100vw;       
+            height: 100vh;      
+            z-index: -1;        
+            pointer-events: none; 
+            background: #0a0a0f; 
         }
 
-        /* 3. 个人网站全局样式（保留+适配） */
+        /* 3. 个人网站全局样式 */
         body {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background: transparent; /* 改为透明，显示粒子背景 */
+            background: transparent; 
             transition: background 0.3s ease;
-            position: relative; /* 确保内容层级高于Canvas */
-            z-index: 1; /* 内容在粒子背景上方 */
-            color: white; /* 文字改为白色，适配深色粒子背景 */
+            position: relative; 
+            z-index: 1; 
+            color: white; 
+            /* 新增：固定body的文字大小和行高，避免继承问题 */
+            font-size: 16px;
+            line-height: 1.5;
         }
 
-        /* 修改h1标题为淡蓝色 */
+        /* 修改h1标题为淡蓝色（新增：固定字体大小，确保移动端一致） */
         h1 {
-            /*color: #87CEFA;  淡蓝色，可替换成#ADD8E6/#b3d9ff等 */
-            /*想要渐变淡蓝就打开下面注释：*/
             background: linear-gradient(90deg, #87CEFA, #b3d9ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            
+            /* 固定h1字体大小，PC/移动端一致 */
+            font-size: 28px !important;
+            line-height: 1.2;
+            margin-bottom: 20px;
         }
 
-        /* 4. 导航栏样式（保留原样式，优化适配深色背景） */
+        /* 4. 导航栏样式（核心：固定所有文字大小，强制不缩放） */
         .nav-container {
-            background-color: rgba(248, 249, 250, 0.8); /* 半透浅灰，适配深色背景 */
+            background-color: rgba(248, 249, 250, 0.8); 
             padding: 15px 20px;
             border-radius: 8px;
             margin: 20px 0;
             display: inline-block;
-            backdrop-filter: blur(5px); /* 毛玻璃效果，更美观 */
+            backdrop-filter: blur(5px);
+            /* 新增：禁止导航栏缩放 */
+            transform: none !important;
         }
 
         .nav-container nav {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 16px;
+            /* 强制固定导航容器字体大小，优先级最高 */
+            font-size: 16px !important;
         }
 
         .nav-container a {
             color: #0066cc;
             text-decoration: none;
             padding: 5px 8px;
+            /* 强制固定导航链接文字大小，覆盖所有继承 */
+            font-size: 16px !important;
+            /* 新增：禁止点击时的高亮效果（移动端优化） */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .nav-container a:hover {
@@ -79,11 +94,12 @@
 
         .nav-container .separator {
             color: #999;
-            font-size: 14px;
+            /* 强制固定分隔符文字大小 */
+            font-size: 14px !important;
             margin: 0 !important;
         }
 
-        /* 5. 按钮样式（保留+适配深色背景） */
+        /* 5. 按钮样式（固定按钮文字大小） */
         button {
             margin-top: 20px;
             padding: 8px 16px;
@@ -93,24 +109,35 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background 0.2s;
+            /* 固定按钮文字大小 */
+            font-size: 16px !important;
+            /* 移动端点击优化 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         button:hover {
             background: #0d66e6;
         }
 
-        /* 6. 图片样式（加轻微阴影，适配深色背景） */
+        /* 6. 图片样式 */
         img {
-            border-radius: 8px; /* 圆角更美观 */
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3); /* 阴影突出图片 */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            /* 新增：图片自适应移动端，不超出屏幕 */
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 7. 段落文字样式（固定大小） */
+        p {
+            font-size: 16px !important;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-    <!-- 1. 水波粒子Canvas容器（必须放在最前面） -->
     <canvas id="particle-canvas"></canvas>
 
-    <!-- 2. 个人网站原有内容（全部保留） -->
     <h1>欢迎来到 Mr. Yang 的个人网站</h1>
     
     <div class="nav-container">
@@ -131,12 +158,8 @@
     <img src="./images/avatar.webp" alt="我的头像" width="200">
     <button type="button" onclick="changeBg()">点击换背景</button>
 
-    <!-- 3. 水波粒子动画JS代码（完整保留） -->
     <script>
-        /**
-         * Top-Down Water Ripple Particle Animation
-         * Creates a 3D grid of particles that ripple like water from the mouse position
-         */
+        /** 水波粒子动画代码（不变） **/
         const canvas = document.getElementById('particle-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -296,16 +319,13 @@
         init();
     </script>
 
-    <!-- 4. 个人网站原有JS代码（保留） -->
     <script>
         let isBgChanged = false;
         function changeBg() {
             if (!isBgChanged) {
-                // 改为半透浅蓝色，不遮挡粒子背景
                 document.body.style.background = "rgba(230, 247, 255, 0.8)";
                 alert("背景色已切换为浅蓝色！");
             } else {
-                // 恢复透明，显示粒子背景
                 document.body.style.background = "transparent";
                 alert("背景色已恢复为粒子背景！");
             }
@@ -314,4 +334,3 @@
     </script>
 </body>
 </html>
-
